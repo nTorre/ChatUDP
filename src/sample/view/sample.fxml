@@ -36,6 +36,13 @@
                   </TextField>
                </children>
             </HBox>
+            <VBox fx:id="vBoxButtonsAdd" layoutX="161.0" layoutY="339.0" prefHeight="147.0" prefWidth="40.0" spacing="8.0">
+               <children>
+                  <Button mnemonicParsing="false" styleClass="buttonJoin" />
+                  <Button mnemonicParsing="false" styleClass="buttonCreateGroup" />
+                  <Button mnemonicParsing="false" styleClass="buttonNewContact" />
+               </children>
+            </VBox>
          </children>
       </Pane>
    </left>

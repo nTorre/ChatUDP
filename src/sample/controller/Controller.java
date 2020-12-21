@@ -83,6 +83,14 @@ public class Controller implements Observer {
     @FXML
     ScrollPane scrollPane;
 
+    // pulsanti che salgono stando sopra al pulsante grosso
+    @FXML
+    VBox vBoxButtonsAdd;
+
+    // pulsante grosso per aggiungere
+    @FXML
+    Button buttonNew;
+
     // contatto "Principale", ovvero quello selezionato, dunque variabile
     Contatto contatto;
 
@@ -148,6 +156,8 @@ public class Controller implements Observer {
 
         //nessuna chat selezionata,
         paneToHide.setVisible(false);
+
+        vBoxButtonsAdd.setVisible(false);
 
         //anche quando premo il tasto invio il messaggio dev'essere inviato
         textFieldMsg.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -259,6 +269,14 @@ public class Controller implements Observer {
                 }
             }
         });
+
+
+        // mostro o meno i pulsantini
+        buttonNew.setOnMouseEntered(e->vBoxButtonsAdd.setVisible(true));
+        buttonNew.setOnMouseExited(e->vBoxButtonsAdd.setVisible(false));
+
+        // ora mantenere aperto se vado sulla vbox
+
 
     }
 
@@ -390,6 +408,7 @@ public class Controller implements Observer {
     public void start(){
         done = false;
     }
+
 
 
     // come per il new contact, ma modifica il contatto

@@ -1,12 +1,15 @@
 # ChatUDP
 
 Programma che permette di intrattenere chat in rete locale tramite datagrammi UDP.
+Scritta completamente in java. Grafica javafx.
 
 Tools:
 * modifiche del contatto;
 * modifca di porta in ascolto;
 * scanner ip in rete;
 
+<br>
+<br>
 
 
 NEW VERSION

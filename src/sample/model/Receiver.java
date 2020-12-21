@@ -12,7 +12,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 public class Receiver {
-    
+
     private DatagramSocket socket;
 
     public void createSocket(int port) {
