@@ -5,7 +5,7 @@
  * tuttavia assolutamente fattibile
  */
 
-package sample.controller;
+package sample.controller.view;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,11 +13,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.AnchorPane;
 import sample.Main;
-import sample.model.Contatto;
+import sample.model.Chat;
 
 import java.io.IOException;
 
-public class ContattoListCellController extends ListCell<Contatto> {
+public class ContattoListCellController extends ListCell<Chat> {
 
     @FXML
     Label labelName;
@@ -40,10 +40,10 @@ public class ContattoListCellController extends ListCell<Contatto> {
 
     // metodo della classe madre, necessaria per applicare le modifiche degli item
     @Override
-    protected void updateItem(Contatto contatto, boolean empty) {
-        super.updateItem(contatto, empty);
+    protected void updateItem(Chat chat, boolean empty) {
+        super.updateItem(chat, empty);
 
-        if(empty || contatto == null) {
+        if(empty || chat == null) {
 
             // metodi utilizzati di default
             setText(null);
@@ -63,15 +63,15 @@ public class ContattoListCellController extends ListCell<Contatto> {
             }
 
             // se il nome è troppo lungo lo taglio
-            String name = contatto.getNome();
+            String name = chat.getNome();
             if (name.length()>22)
                 name = name.substring(0,22)+"...";
             labelName.setText(name);
 
-            labelIpPorta.setText(contatto.getIp()+": "+contatto.getPortaDestinatario());
-            if (contatto.getLastReceived()!=null) {
-                labelLastMess.setText(contatto.getLastReceived().getTesto());
-                labelTime.setText(contatto.getLastReceived().getOrario());
+            labelIpPorta.setText(chat.getIp()+": "+ chat.getPortaDestinatario());
+            if (chat.getLastReceived()!=null) {
+                labelLastMess.setText(chat.getLastReceived().getTesto());
+                labelTime.setText(chat.getLastReceived().getTimestamp());
             }
 
 

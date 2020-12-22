@@ -8,19 +8,15 @@
 
 package sample.model;
 
-public class Messaggio {
+public class TextMessage {
 
     private String testo;
-    private String orario;
-
+    private String timestamp;
     private boolean sent;
 
-    public Messaggio() {
-
-    }
-
-    public Messaggio(String testo, boolean sent) {
+    public TextMessage(String testo, String timestamp, boolean sent) {
         this.testo = testo;
+        this.timestamp = timestamp;
         this.sent = sent;
     }
 
@@ -32,12 +28,12 @@ public class Messaggio {
         this.testo = testo;
     }
 
-    public String getOrario() {
-        return orario;
+    public String getTimestamp() {
+        return timestamp;
     }
 
-    public void setOrario(String orario) {
-        this.orario = orario;
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     public boolean isSent() {

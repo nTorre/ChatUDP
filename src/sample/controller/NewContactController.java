@@ -10,7 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import sample.model.Contatto;
+import sample.model.Chat;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -36,24 +36,24 @@ public class NewContactController{
 
     static ArrayList<String> listaIp;
 
-    Contatto contatto;
+    Chat chat;
 
-    public void setContatti(ArrayList<Contatto> contatti) {
+    public void setContatti(ArrayList<Chat> contatti) {
         this.contatti = contatti;
     }
 
-    ArrayList<Contatto> contatti;
+    ArrayList<Chat> contatti;
     //Controller osservatore;
 
     boolean isNew = true;
 
     static volatile int i=0;
-    private static Boolean isComplete = false;
+    private static final Boolean isComplete = false;
 
     static CountDownLatch latch;
 
     public NewContactController(){
-        contatto = new Contatto();
+        chat = new Chat("p2p");
         contatti = new ArrayList<>();
         listaIp = new ArrayList<>();
     }
@@ -117,9 +117,9 @@ public class NewContactController{
         String nome = textFieldName.getText();
 
         if (!isNew)
-            contatti.remove(contatto);
+            contatti.remove(chat);
 
-        contatto.setValues(ip, porta, nome);
+        chat.setValues(ip, porta, nome);
 
         stage.close();
     }
@@ -131,8 +131,8 @@ public class NewContactController{
     }
 
     //recupero la lista contatti per salvarci dentro il contatto nuovo
-    public void setContatto(Contatto contatto) {
-        this.contatto = contatto;
+    public void setContatto(Chat chat) {
+        this.chat = chat;
 
     }
 
@@ -140,17 +140,17 @@ public class NewContactController{
     public void setInfo(){
         if (!isNew) {
             // porta e ip ce li ho per forza, il nome no: se mi arrivasse un pacchetto da un contatto che on ho
-            textFieldPort.setText(String.valueOf(contatto.getPortaDestinatario()));
-            textFieldIp.setText(contatto.getIp());
-            if (contatto.getNome() != null) {
-                textFieldName.setText(contatto.getNome());
+            textFieldPort.setText(String.valueOf(chat.getPortaDestinatario()));
+            textFieldIp.setText(chat.getIp());
+            if (chat.getNome() != null) {
+                textFieldName.setText(chat.getNome());
             }
         }
     }
 
     public void setObserver(Controller controller){
         //osservatore=controller;
-        contatto.addObserver(controller);
+        chat.addListener(controller);
     }
 
     private void textEditError(boolean isWrong) {

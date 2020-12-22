@@ -6,28 +6,30 @@
 
 package sample.model;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+
 import java.util.ArrayList;
-import java.util.Observable;
 
-public class Contatto extends Observable {
+public class Chat implements Observable {
 
-    private ArrayList<Messaggio> messaggi;
-
-    private Messaggio lastReceived;
+    private ArrayList<TextMessage> messaggi;
+    private TextMessage lastReceived;
 
 
     String ip;
     int portaDestinatario;
-    private int portAscolto;
     String nome;
+    final String TYPE;
 
 
-    public Contatto(){
+    public Chat(String type){
+        TYPE = type;
         messaggi = new ArrayList<>();
     }
 
-    public void addMessaggio(Messaggio messaggio){
-        messaggi.add(messaggio);
+    public void addMessaggio(TextMessage textMessage){
+        messaggi.add(textMessage);
     }
 
     public String getIp() {
@@ -58,17 +60,10 @@ public class Contatto extends Observable {
         this.ip = ip;
         this.nome = nome;
         this.portaDestinatario = porta;
-
-        // notifico gli osservatori (listView)
-        setChanged();
-        notifyObservers();
-
     }
 
-
-    public void notifyMod(){
-        setChanged();
-        notifyObservers();
+    public String getType() {
+        return TYPE;
     }
 
     @Override
@@ -80,27 +75,29 @@ public class Contatto extends Observable {
                 '}';
     }
 
-    public ArrayList<Messaggio> getMessaggi() {
+    public ArrayList<TextMessage> getMessaggi() {
         return messaggi;
     }
 
-    public void setMessaggi(ArrayList<Messaggio> messaggi) {
+    public void setMessaggi(ArrayList<TextMessage> messaggi) {
         this.messaggi = messaggi;
     }
 
-    public Messaggio getLastReceived() {
+    public TextMessage getLastReceived() {
         return lastReceived;
     }
 
-    public void setLastReceived(Messaggio lastReceived) {
+    public void setLastReceived(TextMessage lastReceived) {
         this.lastReceived = lastReceived;
     }
 
-    public int getPortAscolto() {
-        return portAscolto;
+    @Override
+    public void addListener(InvalidationListener invalidationListener) {
+
     }
 
-    public void setPortAscolto(int portAscolto) {
-        this.portAscolto = portAscolto;
+    @Override
+    public void removeListener(InvalidationListener invalidationListener) {
+
     }
 }

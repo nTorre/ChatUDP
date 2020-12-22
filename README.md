@@ -4,7 +4,7 @@ Programma che permette di intrattenere chat in rete locale tramite datagrammi UD
 Scritta completamente in java. Grafica javafx.
 
 Tools:
-* modifiche del contatto;
+* modifiche del chat;
 * modifca di porta in ascolto;
 * scanner ip in rete;
 

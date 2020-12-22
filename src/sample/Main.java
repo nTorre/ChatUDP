@@ -1,16 +1,11 @@
 package sample;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import sample.controller.Controller;
-
-import java.time.LocalDate;
 
 public class Main extends Application {
 
@@ -31,13 +26,9 @@ public class Main extends Application {
         Controller controller = loader.getController();
         controller.setStage(primaryStage);
 
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                controller.stop();
-                controller.getReceiver().closeSocket();
-
-            }
+        primaryStage.setOnCloseRequest(event -> {
+            controller.stop();
+            controller.endSocketManager();
         });
 
     }

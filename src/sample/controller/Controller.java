@@ -7,12 +7,12 @@
 package sample.controller;
 
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -26,12 +26,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import sample.Main;
-import sample.model.Contatto;
-import sample.model.Messaggio;
-import sample.model.Receiver;
-import sample.model.Sender;
+import sample.controller.view.ContattoListCellController;
+import sample.model.Chat;
+import sample.model.TextMessage;
 
 import java.io.IOException;
 import java.net.*;
@@ -40,7 +38,7 @@ import java.util.*;
 /* l'implementazione dell'interfaccia observer è necessaria
    per il la notifica alla classe Controller (questa) quando
    aggiungo un nuovo contatto. Vedi codice più avanti*/
-public class Controller implements Observer {
+public class Controller implements InvalidationListener {
 
     private Stage primaryStage;
     boolean done;
@@ -55,7 +53,7 @@ public class Controller implements Observer {
 
     // la listView dei contatti (a sinistra della schermata)
     @FXML
-    ListView<Contatto> listViewChat;
+    ListView<Chat> listViewChat;
 
     // pane che contiene la grafica che permette di inviare un messaggio
     // andrà a sostituire la label che segue (labelStart), nel momento che
@@ -92,30 +90,24 @@ public class Controller implements Observer {
     Button buttonNew;
 
     // contatto "Principale", ovvero quello selezionato, dunque variabile
-    Contatto contatto;
+    static Chat chat;
 
     // stage per creare un nuovo contatto o modificarne uno presente
     Stage secondaryStage;
 
-    // classi adibite rispettivamente all'invio e alla ricezione di pacchetti
-    Sender sender;
-    Receiver receiver;
+    // classe adibita all'invio e alla ricezione di pacchetti
+    SocketManager socketManager;
 
 
     //array che contiene tutti i contatti e relativi messaggi e informazioni
-    private ArrayList<Contatto> contatti;
+    private final ArrayList<Chat> contatti;
 
 
     //costruttore
     public Controller(){
         //inizializzo il vettore
         contatti = new ArrayList<>();
-
-        receiver = new Receiver();
-        receiver.createSocket(50000);
-        //passo al sender lo stesso socket del receiver, di modo tale da utilizzarne solo uno
-        sender = new Sender(receiver.getSocket());
-
+        socketManager = new SocketManager();
     }
 
 
@@ -129,13 +121,13 @@ public class Controller implements Observer {
         if (!textFieldMsg.getText().isEmpty()) {
 
             // aggiungo al contatto corrente il messaggio
-            contatto.addMessaggio(new Messaggio(textFieldMsg.getText(), true));
+            chat.addMessaggio(new TextMessage(textFieldMsg.getText(), "0", true));
 
             // lo aggiungo alla view
             drawMessage(true, "labelMsg", textFieldMsg.getText());
 
             // metodo che effettivamente invia il datagramma
-            sender.send(contatto.getPortaDestinatario(), contatto.getIp(), textFieldMsg.getText());
+            socketManager.sendText(chat.getPortaDestinatario(), chat.getIp(), textFieldMsg.getText());
 
             //resetto testo
             textFieldMsg.setText("");
@@ -160,77 +152,73 @@ public class Controller implements Observer {
         vBoxButtonsAdd.setVisible(false);
 
         //anche quando premo il tasto invio il messaggio dev'essere inviato
-        textFieldMsg.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent keyEvent) {
-                if (keyEvent.getCode().equals(KeyCode.ENTER))
-                    send();
-            }
+        textFieldMsg.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode().equals(KeyCode.ENTER))
+                send();
         });
 
 
         Controller controller = this;
 
         // thread di ascolto
-        Thread thread = new Thread(new Runnable() {
+        Thread thread = new Thread(() -> {
+            while(!done) {
 
-            @Override
-            public void run() {
-                while(!done) {
+                // FIXME: 22/12/2020 Il SocketManager cosa deve restituire? io pensavo i vari formati, receiveText, receiveJpeg....
+                // FIXME: 22/12/2020 Sistemare chiamate Controller -> socketManager
+                DatagramPacket packet = socketManager.receive();
+                System.out.println("*******************");
+                System.out.println(socketManager.getPort());
 
-                    DatagramPacket packet = receiver.receive(controller);
-                    System.out.println("*******************");
-                    System.out.println(receiver.getSocket().getPort());
+                // converte il buf in stringa
+                String received = new String(packet.getData(), 0, packet.getLength());
 
-                    // converte il buf in stringa
-                    String received = new String(packet.getData(), 0, packet.getLength());
+                // FIXME: 22/12/2020  spostere il codice del cambio nel SocketManager? che errore risolve?
+                // questo if è necessario per evitare errori durante il cambio della porta di ascolto
+                if (packet.getAddress() != null) {
+                    String address = packet.getAddress().getHostAddress();
+                    int porta = packet.getPort();
 
-                    // questo if è necessario per evitare errori durant il cambio della porta di ascolto
-                    if (packet.getAddress() != null) {
-                        String address = packet.getAddress().getHostAddress();
-                        int porta = packet.getPort();
+                    boolean isNew = true;
 
-                        boolean isNew = true;
+                    System.out.println("**************************");
 
-                        System.out.println("**************************");
+                    // scannerizzo i contatti e verifico se il messaggio è stato inviato da un
+                    // contatto nuovo o meno
+                    for (Chat contatto : contatti) {
+                        // stesso ip = contatto già presente nella lista
+                        if (contatto.getIp().equals(address)) {
+                            isNew = false;
+                            Platform.runLater(new Runnable() {
 
-                        // scannerizzo i contatti e verifico se il messaggio è stato inviato da un
-                        // contatto nuovo o meno
-                        for (Contatto contatto : contatti) {
-                            // stesso ip = contatto già presente nella lista
-                            if (contatto.getIp().equals(address)) {
-                                isNew = false;
-                                Platform.runLater(new Runnable() {
-
-                                    @Override
-                                    public void run() {
-                                        // aggiungo il messaggio alla lista e alla view
-                                        contatto.addMessaggio(new Messaggio(received, false));
-                                        drawMessage(false, "labelMsgReceived", received);
-                                    }
-                                });
-                                // esco, in quanto è già stato trovato il contatto
-                                break;
-                            }
-                        }
-
-                        // se è nuovo, creo un nuovo contatto
-                        if (isNew) {
-                            Contatto contatto = new Contatto();
-                            // aggiungo il controller come osservatore per notificare la lista
-                            // di modo tale da aggungerlo
-                            contatto.addObserver(controller);
-                            // aggiungo alla lista dei messaggi del contatto il messaggio nuovo
-                            contatto.addMessaggio(new Messaggio(received, false));
-                            System.out.println(received);
-                            // imposto porta e ip, ma non il nome, aggiungibile in seguito modificando il contatto
-                            contatto.setValues(address, porta, "");
+                                @Override
+                                public void run() {
+                                    // aggiungo il messaggio alla lista e alla view
+                                    contatto.addMessaggio(new TextMessage(received, "0",false));
+                                    drawMessage(false, "labelMsgReceived", received);
+                                }
+                            });
+                            // esco, in quanto è già stato trovato il contatto
+                            break;
                         }
                     }
+
+                    // se è nuovo, creo un nuovo contatto
+                    if (isNew) {
+                        Chat chat = new Chat("p2p");
+                        // aggiungo il controller come osservatore per notificare la lista
+                        // di modo tale da aggungerlo
+                        chat.addListener(Controller.this);
+                        // aggiungo alla lista dei messaggi del contatto il messaggio nuovo
+                        chat.addMessaggio(new TextMessage(received, "0", false));
+                        System.out.println(received);
+                        // imposto porta e ip, ma non il nome, aggiungibile in seguito modificando il contatto
+                        chat.setValues(address, porta, "");
+                    }
                 }
-
-
             }
+
+
         });
         thread.start();
 
@@ -257,11 +245,9 @@ public class Controller implements Observer {
                     textEditError(true);
                 } else if (!isWrong) {
                     // chiudo il socket
-                    receiver.getSocket().close();
+                    socketManager.close();
                     // cambio il socket creandone uno nuovo
-                    receiver.changePort(portInt);
-                    // lo passo al sender
-                    sender.setSocket(receiver.getSocket());
+                    socketManager.changePort(portInt);
                     System.out.println("porta cambiata: "+portInt);
 
                     // rendo il bordo del text edit normale
@@ -280,8 +266,6 @@ public class Controller implements Observer {
 
     }
 
-
-
     // quando clicco sul pulsante per aggiungere un contatto
     @FXML
     public void newContact() throws IOException {
@@ -299,9 +283,9 @@ public class Controller implements Observer {
         secondaryStage.setResizable(false);
 
 
-        contatto = new Contatto();
+        chat = new Chat("p2p");
         NewContactController newContactController = loader.getController();
-        newContactController.setContatto(contatto);
+        newContactController.setContatto(chat);
         newContactController.setObserver(this);
         newContactController.setStage(secondaryStage);
         newContactController.scanIPs();
@@ -312,8 +296,8 @@ public class Controller implements Observer {
 
     // metodo evocato quando notifico una modifica nella classe Contatto
     @Override
-    public void update(Observable observable, Object o) {
-        System.out.println(contatto);
+    public void invalidated(javafx.beans.Observable observable) {
+        System.out.println(chat);
 
         // pulisco la lista
         if (!listViewChat.getItems().isEmpty())
@@ -321,14 +305,10 @@ public class Controller implements Observer {
 
 
         // aggiorno la lista
-        contatti.add((Contatto) observable);
+        contatti.add((Chat) observable);
         listViewChat.setItems(FXCollections.observableArrayList(contatti));
         listViewChat.setCellFactory(studentListView -> new ContattoListCellController());
-
-
-
     }
-
 
     // clicco su un elemento della lista
     @FXML
@@ -340,33 +320,32 @@ public class Controller implements Observer {
             labelStart.setVisible(false);
 
             // imposto come contatto corrente quello che ho selezionato e persente nella lista
-            contatto = contatti.get(listViewChat.getSelectionModel().getSelectedIndex());
-            System.out.println(contatto.getIp());
+            chat = contatti.get(listViewChat.getSelectionModel().getSelectedIndex());
+            System.out.println(chat.getIp());
             // carico i messaggi
             reloadMeassages();
 
             // imposto il nome del contatt in alto
-            labelDestIp.setText(contatto.getNome());
+            labelDestIp.setText(chat.getNome());
 
 
         }
     }
 
-
     // metodo per ricaricare i messaggi nel momento in cui clicco su un altro contatto
     private void reloadMeassages() {
 
-        ArrayList<Messaggio> messaggi = contatto.getMessaggi();
+        ArrayList<TextMessage> messaggi = chat.getMessaggi();
 
         // pulisco dalla vecchia conversazione
         vBoxDialogo.getChildren().clear();
 
         // per ogni messaggio lo inserisco con uno stile differente se ricevuto o inviato
-        for (Messaggio messaggio: messaggi) {
+        for (TextMessage textMessage : messaggi) {
             String style = "labelMsg";
-            if (!messaggio.isSent())
+            if (!textMessage.isSent())
                 style = "labelMsgReceived";
-            drawMessage(messaggio.isSent(), style, messaggio.getTesto());
+            drawMessage(textMessage.isSent(), style, textMessage.getTesto());
         }
 
     }
@@ -400,7 +379,6 @@ public class Controller implements Observer {
 
     }
 
-
     public void stop() {
         done = true;
     }
@@ -408,8 +386,6 @@ public class Controller implements Observer {
     public void start(){
         done = false;
     }
-
-
 
     // come per il new contact, ma modifica il contatto
     @FXML
@@ -428,7 +404,7 @@ public class Controller implements Observer {
 
 
         NewContactController newContactController = loader.getController();
-        newContactController.setContatto(contatto);
+        newContactController.setContatto(chat);
         newContactController.setContatti(contatti);
         newContactController.setStage(secondaryStage);
         // il seguente metodo serve per riferire che il contatto va modificato e non è nuovo
@@ -453,7 +429,11 @@ public class Controller implements Observer {
 
     }
 
-    public Receiver getReceiver(){
-        return receiver;
+    public void endSocketManager(){
+        socketManager.close();
+    }
+
+    public static String getActiveChatType(){
+        return chat.getType();
     }
 }

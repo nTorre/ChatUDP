@@ -1,5 +1,11 @@
 # Default ignored files
 /workspace.xml
+'../Solo fxml.iml'
+/lib.xml
+
+#ignored folders
+../out/
 
 # macOS Files
 .DS_Store
+../.DS_Store
