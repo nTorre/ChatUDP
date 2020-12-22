@@ -3,10 +3,10 @@
 
 #custom ignored files
 '../Solo fxml.iml'
+/libraries/lib.xml
 
 #custom ignored folders
 ../out/
-./libraries/
 
 # macOS Files
 .DS_Store
