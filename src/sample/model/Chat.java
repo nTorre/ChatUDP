@@ -10,6 +10,7 @@ package sample.model;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import sample.controller.Controller;
+import sample.controller.view.ViewManager;
 
 import java.util.ArrayList;
 
@@ -18,7 +19,7 @@ public class Chat{
     private ArrayList<TextMessage> messaggi;
     private TextMessage lastReceived;
 
-    private Controller controller;
+    private ViewManager viewManager;
 
 
     String ip;
@@ -64,7 +65,7 @@ public class Chat{
         this.ip = ip;
         this.nome = nome;
         this.portaDestinatario = porta;
-        controller.update(this);
+        viewManager.update(this);
     }
 
     public String getType() {
@@ -97,8 +98,8 @@ public class Chat{
     }
 
 
-    public void addListener(Controller controller) {
-        this.controller = controller;
+    public void addListener(ViewManager viewManager) {
+        this.viewManager = viewManager;
     }
 
 }

@@ -1,0 +1,105 @@
+.textFieldPort{
+}
+
+.textFieldPort.error {
+-fx-background-color: rgba(255, 0, 0, 0.3);;
+
+}
+
+.paneChats{
+-fx-background-color: #E3E3E3;
+-fx-border-width: 1;
+-fx-border-color: transparent grey transparent transparent;
+}
+
+.paneInfo{
+-fx-background-color: #E3E3E3;
+}
+
+.buttonNewMessage{
+-fx-background-radius: 50 50 50 50;
+-fx-background-color: #7FD6E9;
+}
+
+.buttonNewMessage:hover{
+-fx-pref-height: 55px;
+-fx-pref-width: 55px;
+}
+
+.buttonNewContact{
+    -fx-pref-height: 40px;
+    -fx-pref-width: 40px;
+    -fx-background-image: url('icons/addcontatto.png');
+    -fx-background-radius: 50 50 50 50;
+    -fx-background-color: #7FD6E9;
+    -fx-background-size: 25px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 50%;
+}
+
+.buttonJoin{
+    -fx-pref-height: 40px;
+    -fx-pref-width: 40px;
+    -fx-background-image: url('icons/multicast2.png');
+    -fx-background-radius: 50 50 50 50;
+    -fx-background-color: #7FD6E9;
+    -fx-background-size: 25px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 50%;
+}
+
+.buttonCreateGroup{
+    -fx-pref-height: 40px;
+    -fx-pref-width: 40px;
+    -fx-background-image: url('icons/multicast.png');
+    -fx-background-radius: 50 50 50 50;
+    -fx-background-color: #7FD6E9;
+    -fx-background-size: 25px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 50%;
+}
+
+.paneChat{
+}
+
+.paneMsg{
+-fx-background-color: #E3E3E3;
+}
+
+.textFieldMsg{
+-fx-background-color: #ffffff;
+-fx-border-radius: 10 10 10 10;
+-fx-background-radius: 13 13 13 13;
+}
+
+.buttonSend{
+-fx-background-radius: 40 40 40 40;
+-fx-background-color: #7FD6E9;
+}
+
+.vBoxDialogo{
+-fx-background-color:transparent;
+}
+
+.labelMsg{
+-fx-background-radius: 10 10 10 10;
+-fx-background-color: #7FD6E9;
+}
+
+.labelMsgReceived{
+-fx-background-radius: 10 10 10 10;
+-fx-background-color: #1a8199;
+}
+
+.buttonModify{
+-fx-background-radius: 30 30 30 30;
+-fx-background-color: #7FD6E9
+}
+
+.scrollpane .viewport{
+-fx-background-color:transparent;
+-fx-background-image: url("icons/sfondoChat.png");
+-fx-background-repeat: stretch;
+-fx-background-size: 800 500;
+-fx-background-position: center center;
+}

@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import sample.controller.Controller;
+import sample.controller.view.ViewManager;
 
 public class Main extends Application {
 
@@ -23,12 +24,12 @@ public class Main extends Application {
         primaryStage.show();
         primaryStage.setResizable(false);
 
-        Controller controller = loader.getController();
-        controller.setStage(primaryStage);
+        ViewManager viewManager = loader.getController();
+        viewManager.setStage(primaryStage);
 
         primaryStage.setOnCloseRequest(event -> {
-            controller.stop();
-            controller.endSocketManager();
+            viewManager.getController().stop();
+            viewManager.getController().endSocketManager();
         });
 
     }

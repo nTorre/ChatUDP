@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import sample.controller.Controller;
 import sample.model.Chat;
 
+import javax.swing.text.View;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -151,9 +152,9 @@ public class NewContactController{
         }
     }
 
-    public void setObserver(Controller controller){
+    public void setObserver(ViewManager viewManager){
         //osservatore=controller;
-        chat.addListener(controller);
+        chat.addListener(viewManager);
     }
 
     private void textEditError(boolean isWrong) {
