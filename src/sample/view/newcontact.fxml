@@ -2,7 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.NewContactController">
+<AnchorPane prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.view.NewContactController">
    <children>
       <ListView fx:id="listViewIps" layoutX="34.0" layoutY="53.0" prefHeight="170.0" prefWidth="152.0" onMouseClicked="#listIpClicked" />
       <Label layoutX="34.0" layoutY="29.0" text="Ip disponibili:" />

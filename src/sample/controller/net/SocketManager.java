@@ -1,5 +1,6 @@
-package sample.controller;
+package sample.controller.net;
 
+import sample.controller.Controller;
 import sample.controller.net.*;
 
 import java.io.IOException;
@@ -149,13 +150,6 @@ public class SocketManager {
             e.printStackTrace();
         }
     }
-
-
-
-
-
-
-
 
 
 }

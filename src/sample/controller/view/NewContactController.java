@@ -2,7 +2,7 @@
  * Classe che controlla la modifca o il salvataggio di un contatto
  */
 
-package sample.controller;
+package sample.controller.view;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import sample.controller.Controller;
 import sample.model.Chat;
 
 import java.net.InetAddress;

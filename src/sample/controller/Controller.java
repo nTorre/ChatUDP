@@ -5,101 +5,19 @@
  */
 
 package sample.controller;
-
-import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
-import sample.Main;
-import sample.controller.view.ContattoListCellController;
+import sample.controller.net.SocketManager;
+import sample.controller.view.NewContactController;
+import sample.controller.view.ViewManager;
 import sample.model.Chat;
-import sample.model.TextMessage;
 
-import java.io.IOException;
-import java.net.*;
-import java.util.*;
+import java.net.DatagramPacket;
+import java.util.ArrayList;
 
-/* l'implementazione dell'interfaccia observer è necessaria
-   per il la notifica alla classe Controller (questa) quando
-   aggiungo un nuovo contatto. Vedi codice più avanti*/
 public class Controller {
 
-    private Stage primaryStage;
     boolean done;
-
-    // textField adibito all'inserimento del testo del messaggio
-    @FXML
-    TextField textFieldMsg;
-
-    // vertical box che contiene le label dei messaggi inviati/ricevuti
-    @FXML
-    VBox vBoxDialogo;
-
-    // la listView dei contatti (a sinistra della schermata)
-    @FXML
-    ListView<Chat> listViewChat;
-
-    // pane che contiene la grafica che permette di inviare un messaggio
-    // andrà a sostituire la label che segue (labelStart), nel momento che
-    @FXML
-    Pane paneToHide;
-
-    // label contenente il testo "clicca su una chat per avviare una conversazione"
-    @FXML
-    Label labelStart;
-
-    // label contenente il nome del contatto nel momento in cui lo apro
-    @FXML
-    Label labelDestIp;
-
-    // label contenetne il mio ip, per comodità del mittente quando io sono il destinatario
-    // (non serve reperirlo da cmd o impostazioni)
-    @FXML
-    Label labelMyIp;
-
-    // textField per cambiare la mia porta di ascolto
-    @FXML
-    TextField textFieldPort;
-
-    // scroll pane che conterrà le varie chat, permettendo di scorrere sui messaggi vecchi
-    @FXML
-    ScrollPane scrollPane;
-
-    // pulsanti che salgono stando sopra al pulsante grosso
-    @FXML
-    VBox vBoxButtonsAdd;
-
-    // pulsante grosso per aggiungere
-    @FXML
-    Button buttonNew;
-
-    // contatto "Principale", ovvero quello selezionato, dunque variabile
-    static Chat chat;
-
-    // stage per creare un nuovo contatto o modificarne uno presente
-    Stage secondaryStage;
-
-    // classe adibita all'invio e alla ricezione di pacchetti
     SocketManager socketManager;
+    ViewManager viewManager;
 
 
     //array che contiene tutti i contatti e relativi messaggi e informazioni
@@ -111,55 +29,10 @@ public class Controller {
         //inizializzo il vettore
         contatti = new ArrayList<>();
         socketManager = new SocketManager();
-    }
-
-
-    public void setStage(Stage primaryStage){
-        this.primaryStage=primaryStage;
-    }
-
-    //metodo associato al pulsante che permette l'invio del messaggio
-    @FXML
-    public void send(){
-        if (!textFieldMsg.getText().isEmpty()) {
-
-            // aggiungo al contatto corrente il messaggio
-            chat.addMessaggio(new TextMessage(textFieldMsg.getText(), "0", true));
-
-            // lo aggiungo alla view
-            drawMessage(true, "labelMsg", textFieldMsg.getText());
-
-            // metodo che effettivamente invia il datagramma
-            socketManager.sendText(chat.getPortaDestinatario(), chat.getIp(), textFieldMsg.getText());
-
-            //resetto testo
-            textFieldMsg.setText("");
-
-        }
-
+        viewManager = new ViewManager();
     }
 
     public void initialize(){
-
-        //recupero ip per impostare la label
-        try {
-            labelMyIp.setText("Ip: "+ InetAddress.getLocalHost().getHostAddress());
-
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-
-        //nessuna chat selezionata,
-        paneToHide.setVisible(false);
-
-        vBoxButtonsAdd.setVisible(false);
-
-        //anche quando premo il tasto invio il messaggio dev'essere inviato
-        textFieldMsg.setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCode().equals(KeyCode.ENTER))
-                send();
-        });
-
 
         // thread di ascolto
         Thread thread = new Thread(() -> {
@@ -176,51 +49,39 @@ public class Controller {
 
                 // FIXME: 22/12/2020  spostere il codice del cambio nel SocketManager? che errore risolve?
                 // questo if è necessario per evitare errori durante il cambio della porta di ascolto
-                if (packet.getAddress() != null) {
-                    String address = packet.getAddress().getHostAddress();
-                    int porta = packet.getPort();
+                String address = packet.getAddress().getHostAddress();
+                int porta = packet.getPort();
 
-                    boolean isNew = true;
+                boolean isNew = true;
 
-                    System.out.println("**************************");
+                System.out.println("**************************");
 
-                    // scannerizzo i contatti e verifico se il messaggio è stato inviato da un
-                    // contatto nuovo o meno
-                    for (Chat contatto : contatti) {
-                        // stesso ip = contatto già presente nella lista
-                        if (contatto.getIp().equals(address)) {
-                            isNew = false;
-                            Platform.runLater(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    // aggiungo il messaggio alla lista e alla view
-                                    contatto.addMessaggio(new TextMessage(received, "0",false));
-                                    drawMessage(false, "labelMsgReceived", received);
-                                }
-                            });
-                            // esco, in quanto è già stato trovato il contatto
-                            break;
-                        }
-                    }
-
-                    // se è nuovo, creo un nuovo contatto
-                    if (isNew) {
-                        Chat chat = new Chat("p2p");
-                        // aggiungo il controller come osservatore per notificare la lista
-                        // di modo tale da aggungerlo
-                        chat.addListener(this);
-                        // aggiungo alla lista dei messaggi del contatto il messaggio nuovo
-                        chat.addMessaggio(new TextMessage(received, "0", false));
-                        System.out.println(received);
-                        // imposto porta e ip, ma non il nome, aggiungibile in seguito modificando il contatto
-                        chat.setValues(address, porta, "");
+                // scannerizzo i contatti e verifico se il messaggio è stato inviato da un
+                // contatto nuovo o meno
+                for (Chat contatto : contatti) {
+                    // stesso ip = contatto già presente nella lista
+                    if (contatto.getIp().equals(address)) {
+                        isNew = false;
+                        addChat();
+                        // esco, in quanto è già stato trovato il contatto
+                        break;
                     }
                 }
-            }
+
+                // se è nuovo, creo un nuovo contatto
+                if (isNew) {
+                    Chat chat = new Chat("p2p");
+                    // aggiungo il controller come osservatore per notificare la lista
+                    // di modo tale da aggungerlo
+                    // aggiungo alla lista dei messaggi del contatto il messaggio nuovo
+                    chat.addMessaggio(new TextMessage(received, "0", false));
+                    System.out.println(received);
+                    // imposto porta e ip, ma non il nome, aggiungibile in seguito modificando il contatto
+                    chat.setValues(address, porta, "");
+                }
 
 
-        });
+            }});
         thread.start();
 
 
@@ -258,14 +119,38 @@ public class Controller {
         });
 
 
+
+
         // mostro o meno i pulsantini
         buttonNew.setOnMouseEntered(e->vBoxButtonsAdd.setVisible(true));
         buttonNew.setOnMouseExited(e->vBoxButtonsAdd.setVisible(false));
 
         // ora mantenere aperto se vado sulla vbox
 
-
     }
+
+
+
+    public void sendText(int port, String destIP, String msg){
+        socketManager.sendText(port, destIP, msg);
+    }
+
+    private void addChat(){
+        Chat tmp = new Chat("p2p");
+        contatti.add(new Chat("p2p"));
+        //colllegare con i parametri che arrivano da interfaccia
+    }
+
+    public void changePort(int newPort){
+        socketManager.changePort(newPort);
+    }
+
+    public static String getActiveChatType(){
+        return viewManager.getActiveChat.getType();
+    }
+
+
+
 
     // quando clicco sul pulsante per aggiungere un contatto
     @FXML
@@ -371,9 +256,6 @@ public class Controller {
         done = true;
     }
 
-    public void start(){
-        done = false;
-    }
 
     // come per il new contact, ma modifica il contatto
     @FXML
@@ -418,10 +300,6 @@ public class Controller {
 
     public void endSocketManager(){
         socketManager.close();
-    }
-
-    public static String getActiveChatType(){
-        return chat.getType();
     }
 
     public void update(Chat chat){
