@@ -8,6 +8,9 @@ package sample.controller;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -38,7 +41,7 @@ import java.util.*;
 /* l'implementazione dell'interfaccia observer è necessaria
    per il la notifica alla classe Controller (questa) quando
    aggiungo un nuovo contatto. Vedi codice più avanti*/
-public class Controller implements InvalidationListener {
+public class Controller {
 
     private Stage primaryStage;
     boolean done;
@@ -158,8 +161,6 @@ public class Controller implements InvalidationListener {
         });
 
 
-        Controller controller = this;
-
         // thread di ascolto
         Thread thread = new Thread(() -> {
             while(!done) {
@@ -208,7 +209,7 @@ public class Controller implements InvalidationListener {
                         Chat chat = new Chat("p2p");
                         // aggiungo il controller come osservatore per notificare la lista
                         // di modo tale da aggungerlo
-                        chat.addListener(Controller.this);
+                        chat.addListener(this);
                         // aggiungo alla lista dei messaggi del contatto il messaggio nuovo
                         chat.addMessaggio(new TextMessage(received, "0", false));
                         System.out.println(received);
@@ -286,29 +287,16 @@ public class Controller implements InvalidationListener {
         chat = new Chat("p2p");
         NewContactController newContactController = loader.getController();
         newContactController.setContatto(chat);
-        newContactController.setObserver(this);
         newContactController.setStage(secondaryStage);
         newContactController.scanIPs();
+        newContactController.setObserver(this);
 
 
     }
 
 
     // metodo evocato quando notifico una modifica nella classe Contatto
-    @Override
-    public void invalidated(javafx.beans.Observable observable) {
-        System.out.println(chat);
 
-        // pulisco la lista
-        if (!listViewChat.getItems().isEmpty())
-            listViewChat.getItems().clear();
-
-
-        // aggiorno la lista
-        contatti.add((Chat) observable);
-        listViewChat.setItems(FXCollections.observableArrayList(contatti));
-        listViewChat.setCellFactory(studentListView -> new ContattoListCellController());
-    }
 
     // clicco su un elemento della lista
     @FXML
@@ -410,7 +398,6 @@ public class Controller implements InvalidationListener {
         // il seguente metodo serve per riferire che il contatto va modificato e non è nuovo
         newContactController.isNew(false);
         newContactController.setInfo();
-        newContactController.setObserver(this);
     }
 
     // colorazione rossa del text edit per la porta
@@ -436,4 +423,19 @@ public class Controller implements InvalidationListener {
     public static String getActiveChatType(){
         return chat.getType();
     }
+
+    public void update(Chat chat){
+        System.out.println(chat);
+
+        // pulisco la lista
+        if (!listViewChat.getItems().isEmpty())
+            listViewChat.getItems().clear();
+
+
+        // aggiorno la lista
+        contatti.add(chat);
+        listViewChat.setItems(FXCollections.observableArrayList(contatti));
+        listViewChat.setCellFactory(studentListView -> new ContattoListCellController());
+    }
+
 }

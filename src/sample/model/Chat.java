@@ -6,15 +6,19 @@
 
 package sample.model;
 
+
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import sample.controller.Controller;
 
 import java.util.ArrayList;
 
-public class Chat implements Observable {
+public class Chat{
 
     private ArrayList<TextMessage> messaggi;
     private TextMessage lastReceived;
+
+    private Controller controller;
 
 
     String ip;
@@ -60,6 +64,7 @@ public class Chat implements Observable {
         this.ip = ip;
         this.nome = nome;
         this.portaDestinatario = porta;
+        controller.update(this);
     }
 
     public String getType() {
@@ -68,7 +73,7 @@ public class Chat implements Observable {
 
     @Override
     public String toString() {
-        return "Contatto{" +
+        return "Chat{" +
                 "ip='" + ip + '\'' +
                 ", porta=" + portaDestinatario +
                 ", nome='" + nome + '\'' +
@@ -91,13 +96,9 @@ public class Chat implements Observable {
         this.lastReceived = lastReceived;
     }
 
-    @Override
-    public void addListener(InvalidationListener invalidationListener) {
 
+    public void addListener(Controller controller) {
+        this.controller = controller;
     }
 
-    @Override
-    public void removeListener(InvalidationListener invalidationListener) {
-
-    }
 }
