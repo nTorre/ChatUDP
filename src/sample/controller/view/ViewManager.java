@@ -2,6 +2,7 @@ package sample.controller.view;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -10,9 +11,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
@@ -75,11 +76,13 @@ public class ViewManager {
     @FXML
     Button buttonNew;
 
+
     Controller controller;
 
     private Stage primaryStage;
     boolean done;
 
+    boolean isOn = false;
 
     // contatto "Principale", ovvero quello selezionato, dunque variabile
     static Chat chat;
@@ -110,7 +113,6 @@ public class ViewManager {
         //nessuna chat selezionata,
         paneToHide.setVisible(false);
 
-        vBoxButtonsAdd.setVisible(false);
 
         //anche quando premo il tasto invio il messaggio dev'essere inviato
         textFieldMsg.setOnKeyPressed(keyEvent -> {
@@ -152,11 +154,64 @@ public class ViewManager {
         });
 
 
-        // mostro o meno i pulsantini
-        buttonNew.setOnMouseEntered(e->vBoxButtonsAdd.setVisible(true));
-        buttonNew.setOnMouseExited(e->vBoxButtonsAdd.setVisible(false));
+        vBoxButtonsAdd.setVisible(false);
 
-        // ora mantenere aperto se vado sulla vbox
+        // mostro o meno i pulsantini
+        EventHandler eventEnter = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+
+                vBoxButtonsAdd.setVisible(true);
+                buttonNew.removeEventFilter(MouseEvent.MOUSE_ENTERED, this);
+
+
+            }
+        };
+        buttonNew.addEventFilter(MouseEvent.MOUSE_ENTERED, eventEnter);
+
+        buttonNew.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                buttonNew.addEventFilter(MouseEvent.MOUSE_ENTERED, eventEnter);
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (!isOn){
+                            vBoxButtonsAdd.setVisible(false);
+                        }
+                    }
+                }).start();
+
+            }
+        });
+
+
+        vBoxButtonsAdd.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                isOn = false;
+                vBoxButtonsAdd.setVisible(false);
+                buttonNew.addEventFilter(MouseEvent.MOUSE_ENTERED, eventEnter);
+
+
+
+            }
+        });
+
+        vBoxButtonsAdd.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                isOn = true;
+
+            }
+        });
 
 
     }
@@ -350,5 +405,22 @@ public class ViewManager {
     public Controller getController(){
         return controller;
     }
+
+
+    /*public void bigButton(Button button, double dim){
+        double lato = button.getHeight();
+        button.setPrefSize(lato+dim, lato+dim);
+        button.setLayoutX(button.getLayoutX()-dim/2);
+        button.setLayoutY(button.getLayoutY()-dim/2);
+
+    }
+
+    public void smallButton(Button button, double dim){
+        double lato = button.getHeight();
+        button.setPrefSize(lato-dim, lato-dim);
+        button.setLayoutX(button.getLayoutX()+dim/2);
+        button.setLayoutY(button.getLayoutY()+dim/2);
+
+    }*/
 
 }

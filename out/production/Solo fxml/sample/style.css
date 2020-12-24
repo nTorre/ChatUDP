@@ -21,11 +21,6 @@
 -fx-background-color: #7FD6E9;
 }
 
-.buttonNewMessage:hover{
--fx-pref-height: 55px;
--fx-pref-width: 55px;
-}
-
 .buttonNewContact{
     -fx-pref-height: 40px;
     -fx-pref-width: 40px;
@@ -57,6 +52,26 @@
     -fx-background-size: 25px;
     -fx-background-repeat: no-repeat;
     -fx-background-position: 50%;
+}
+
+.buttonNewMessage:hover{
+-fx-pref-height: 55px;
+-fx-pref-width: 55px;
+}
+
+.buttonCreateGroup:hover{
+-fx-pref-height: 45px;
+-fx-min-width: 45px;
+}
+
+.buttonJoin:hover{
+-fx-pref-height: 45px;
+-fx-min-width: 45px;
+}
+
+.buttonNewContact:hover{
+-fx-pref-height: 45px;
+-fx-min-width: 45px;
 }
 
 .paneChat{
