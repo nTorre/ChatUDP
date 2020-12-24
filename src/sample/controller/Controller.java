@@ -142,4 +142,16 @@ public class Controller {
     }
 
 
+    public Chat getContatto(int i){
+        return contatti.get(i);
+    }
+
+    public ArrayList<Chat> getContatti(){
+        return contatti;
+    }
+
+    public void addContatto(Chat chat){
+        contatti.add(chat);
+    }
+
 }

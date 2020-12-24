@@ -80,10 +80,6 @@ public class ViewManager {
     private Stage primaryStage;
     boolean done;
 
-    //array che contiene tutti i contatti e relativi messaggi e informazioni
-    private final ArrayList<Chat> contatti;
-
-
 
     // contatto "Principale", ovvero quello selezionato, dunque variabile
     static Chat chat;
@@ -96,7 +92,6 @@ public class ViewManager {
 
     public ViewManager(){
         controller = new Controller();
-        contatti = new ArrayList<>();
         controller.setViewManager(this);
     }
 
@@ -226,7 +221,7 @@ public class ViewManager {
             labelStart.setVisible(false);
 
             // imposto come contatto corrente quello che ho selezionato e persente nella lista
-            chat = contatti.get(listViewChat.getSelectionModel().getSelectedIndex());
+            chat = controller.getContatto(listViewChat.getSelectionModel().getSelectedIndex());
             System.out.println(chat.getIp());
             // carico i messaggi
             reloadMeassages();
@@ -285,7 +280,7 @@ public class ViewManager {
 
         NewContactController newContactController = loader.getController();
         newContactController.setContatto(chat);
-        newContactController.setContatti(contatti);
+        newContactController.setContatti(controller.getContatti());
         newContactController.setStage(secondaryStage);
         // il seguente metodo serve per riferire che il contatto va modificato e non è nuovo
         newContactController.isNew(false);
@@ -319,8 +314,8 @@ public class ViewManager {
 
 
         // aggiorno la lista
-        contatti.add(chat);
-        listViewChat.setItems(FXCollections.observableArrayList(contatti));
+        controller.addContatto(chat);
+        listViewChat.setItems(FXCollections.observableArrayList(controller.getContatti()));
         listViewChat.setCellFactory(studentListView -> new ContattoListCellController());
     }
 
@@ -347,9 +342,6 @@ public class ViewManager {
         return chat;
     }
 
-    public void addChat(Chat chat){
-        contatti.add(chat);
-    }
 
     public void setStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
