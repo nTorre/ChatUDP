@@ -19,7 +19,7 @@
          <children>
             <ListView fx:id="listViewChat" layoutY="62.0" onMouseClicked="#listItemClicked" prefHeight="488.0" prefWidth="220.0" />
             <AnchorPane prefHeight="200.0" prefWidth="200.0" />
-            <Button fx:id="buttonNew" layoutX="156.0" layoutY="486.0" mnemonicParsing="false" onAction="#newContact" prefHeight="50.0" prefWidth="50.0" styleClass="buttonNewMessage" text="+">
+            <Button fx:id="buttonNew" layoutX="156.0" layoutY="486.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="buttonNewMessage" text="+">
                <font>
                   <Font size="18.0" />
                </font>
@@ -38,11 +38,11 @@
                   </TextField>
                </children>
             </HBox>
-            <VBox fx:id="vBoxButtonsAdd" layoutX="161.0" layoutY="339.0" prefHeight="147.0" prefWidth="40.0" spacing="8.0">
+            <VBox fx:id="vBoxButtonsAdd" alignment="TOP_CENTER" layoutX="154.0" layoutY="339.0" prefHeight="147.0" prefWidth="60.0" spacing="8.0">
                <children>
-                  <Button mnemonicParsing="false" styleClass="buttonJoin" />
-                  <Button mnemonicParsing="false" styleClass="buttonCreateGroup" />
-                  <Button mnemonicParsing="false" styleClass="buttonNewContact" />
+                  <Button mnemonicParsing="false" onAction="#newGroup" styleClass="buttonJoin" />
+                  <Button mnemonicParsing="false" onAction="#joinGroup" styleClass="buttonCreateGroup" />
+                  <Button mnemonicParsing="false" onAction="#newContact" prefHeight="40.0" prefWidth="40.0" styleClass="buttonNewContact" />
                </children>
             </VBox>
          </children>

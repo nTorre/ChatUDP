@@ -31,6 +31,7 @@ public class Controller {
         //inizializzo il vettore
         contatti = new ArrayList<>();
         socketManager = new SocketManager();
+        initialize();
     }
 
     public void setViewManager(ViewManager viewManager){

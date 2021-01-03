@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+
+<Pane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.CreateGroupController">
+   <children>
+      <Button layoutX="197.0" layoutY="250.0" mnemonicParsing="false" onAction="#createGr" prefHeight="40.0" prefWidth="207.0" styleClass="buttonCustom" stylesheets="@../style.css" text="Conferma" />
+      <TextField fx:id="textFieldIpCr" layoutX="180.0" layoutY="152.0" prefWidth="240.0" styleClass="textFieldMsg" stylesheets="@../style.css" />
+      <Label layoutX="228.0" layoutY="83.0" text="Inserisci ip:">
+         <font>
+            <Font name="System Bold" size="27.0" />
+         </font>
+      </Label>
+   </children>
+</Pane>

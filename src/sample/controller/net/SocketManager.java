@@ -74,7 +74,7 @@ public class SocketManager {
         try {
             setServiceType();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
         DatagramPacket pkt = null;
