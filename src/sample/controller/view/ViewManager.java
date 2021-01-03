@@ -1,6 +1,8 @@
 package sample.controller.view;
 
 import javafx.animation.PathTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -83,6 +85,10 @@ public class ViewManager {
     @FXML
     Button buttonNew;
 
+    //puylsante invio/foto
+    @FXML
+    Button buttonSend;
+
 
     Controller controller;
 
@@ -126,6 +132,19 @@ public class ViewManager {
             if (keyEvent.getCode().equals(KeyCode.ENTER))
                 send();
         });
+
+        /*textFieldMsg.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String s2) {
+                if (!s.isEmpty()){
+                    buttonSend.setStyle("-fx-background-image: url('icons/send.png')");
+                }
+                else{
+                    buttonSend.setStyle("-fx-background-image: url('icons/camera.png')");
+
+                }
+            }
+        });*/
 
 
 
