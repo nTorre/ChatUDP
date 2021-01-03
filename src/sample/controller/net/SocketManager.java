@@ -21,7 +21,7 @@ public class SocketManager {
     public SocketManager() {
     }
 
-    public void sendText(int port, String destIP, String msg){
+    public void sendText(int port, String destIP, Packet packet){
         try {
             setServiceType();
         } catch (IOException e) {
@@ -30,13 +30,13 @@ public class SocketManager {
 
         if(activeType.equals("p2p")){
             try {
-                senderP2P.send(port, destIP, msg);
+                senderP2P.send(port, destIP, packet);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }else{
             try {
-                senderMulticast.send(port, destIP, msg);
+                senderMulticast.send(port, destIP, packet);
             } catch (IOException e) {
                 e.printStackTrace();
             }

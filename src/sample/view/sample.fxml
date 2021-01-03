@@ -62,7 +62,7 @@
             <Pane layoutX="-2.0" layoutY="488.0" prefHeight="62.0" prefWidth="583.0" styleClass="paneMsg" stylesheets="@../style.css">
                <children>
                   <TextField fx:id="textFieldMsg" layoutX="15.0" layoutY="18.0" onAction="#send" prefHeight="27.0" prefWidth="463.0" promptText="Scrivi qui il tuo textMessage" styleClass="textFieldMsg" stylesheets="@../style.css" />
-                  <Button fx:id="buttonSend" layoutX="506.0" layoutY="11.0" mnemonicParsing="false" onAction="#send" prefHeight="40.0" prefWidth="40.0" styleClass="buttonSend" stylesheets="@../style.css" />
+                  <Button fx:id="buttonSend" layoutX="506.0" layoutY="11.0" mnemonicParsing="false" onAction="#send" prefHeight="40.0" prefWidth="40.0" styleClass="buttonCamera" stylesheets="@../style.css" />
                </children>
             </Pane>
             <ScrollPane fx:id="scrollPane" layoutY="62.0" prefHeight="425.0" prefWidth="580.0" styleClass="scrollpane" stylesheets="@../style.css">

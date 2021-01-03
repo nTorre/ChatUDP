@@ -28,8 +28,8 @@ public class SenderP2P implements Sender{
     }
 
     @Override
-    public String  send(int port, String ip, String msg) throws IOException {
-        return send(port, ip, msg.getBytes());
+    public String  send(int port, String ip, Packet packet) throws IOException {
+        return send(port, ip, packet.getBytes());
     }
 
     @Override

@@ -5,6 +5,7 @@
  */
 
 package sample.controller;
+import sample.controller.net.Packet;
 import sample.controller.net.SocketManager;
 import sample.controller.view.NewContactController;
 import sample.controller.view.ViewManager;
@@ -99,8 +100,8 @@ public class Controller {
 
 
 
-    public void sendText(int port, String destIP, String msg){
-        socketManager.sendText(port, destIP, msg);
+    public void sendText(int port, String destIP, Packet packet){
+        socketManager.sendText(port, destIP, packet);
     }
 
     private void addChat(){

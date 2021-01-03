@@ -28,6 +28,7 @@ import sample.Main;
 import sample.controller.Controller;
 import sample.controller.CreateGroupController;
 import sample.controller.JoinController;
+import sample.controller.net.Packet;
 import sample.model.Chat;
 import sample.model.TextMessage;
 
@@ -93,7 +94,6 @@ public class ViewManager {
     Controller controller;
 
     private Stage primaryStage;
-    boolean done;
 
     boolean isOn = false;
 
@@ -102,7 +102,6 @@ public class ViewManager {
 
     // stage per creare un nuovo contatto o modificarne uno presente
     Stage secondaryStage;
-
 
 
 
@@ -133,19 +132,19 @@ public class ViewManager {
                 send();
         });
 
-        /*textFieldMsg.textProperty().addListener(new ChangeListener<String>() {
+        textFieldMsg.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String s2) {
-                if (!s.isEmpty()){
-                    buttonSend.setStyle("-fx-background-image: url('icons/send.png')");
+                if (!s2.isEmpty()){
+                    buttonSend.getStyleClass().clear();
+                    buttonSend.getStyleClass().add("buttonSend");
                 }
                 else{
-                    buttonSend.setStyle("-fx-background-image: url('icons/camera.png')");
-
+                    buttonSend.getStyleClass().clear();
+                    buttonSend.getStyleClass().add("buttonCamera");
                 }
             }
-        });*/
-
+        });
 
 
         // listener per la porta su cui sono in ascolto
@@ -247,7 +246,7 @@ public class ViewManager {
     public void send(){
         if (!textFieldMsg.getText().isEmpty()) {
 
-            controller.sendText(chat.getPortaDestinatario(), chat.getIp(), textFieldMsg.getText());
+            controller.sendText(chat.getPortaDestinatario(), chat.getIp(), new Packet(textFieldMsg.getText()));
 
 
             // aggiungo al contatto corrente il messaggio
@@ -258,6 +257,8 @@ public class ViewManager {
 
             //resetto testo
             textFieldMsg.setText("");
+
+        } else{
 
         }
 

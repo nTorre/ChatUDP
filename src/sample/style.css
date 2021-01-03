@@ -96,6 +96,15 @@
 -fx-background-position: 50%;
 }
 
+.buttonCamera{
+-fx-background-image: url('icons/camera.png');
+-fx-background-radius: 50 50 50 50;
+-fx-background-color: #7FD6E9;
+-fx-background-size: 25px;
+-fx-background-repeat: no-repeat;
+-fx-background-position: 50%;
+}
+
 .vBoxDialogo{
 -fx-background-color:transparent;
 }

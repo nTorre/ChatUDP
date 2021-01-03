@@ -26,8 +26,8 @@ public class SenderMulticast implements Sender{
     }
 
     @Override
-    public String send(int port, String groupIP, String msg) throws IOException {
-        return send(port, groupIP, msg.getBytes());
+    public String send(int port, String groupIP, Packet packet) throws IOException {
+        return send(port, groupIP, packet.getBytes());
     }
 
     @Override
