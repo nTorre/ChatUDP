@@ -5,14 +5,12 @@
  */
 
 package sample.controller;
-import sample.controller.net.Packet;
+import sample.model.Packet;
 import sample.controller.net.SocketManager;
-import sample.controller.view.NewContactController;
 import sample.controller.view.ViewManager;
 import sample.model.Chat;
 import sample.model.TextMessage;
 
-import javax.swing.text.View;
 import java.net.DatagramPacket;
 import java.util.ArrayList;
 

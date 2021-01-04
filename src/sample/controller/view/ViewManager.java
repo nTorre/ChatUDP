@@ -1,6 +1,5 @@
 package sample.controller.view;
 
-import javafx.animation.PathTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -10,28 +9,25 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import sample.Main;
 import sample.controller.Controller;
 import sample.controller.CreateGroupController;
 import sample.controller.JoinController;
-import sample.controller.net.Packet;
-import sample.model.Chat;
-import sample.model.TextMessage;
+import sample.model.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -128,8 +124,13 @@ public class ViewManager {
 
         //anche quando premo il tasto invio il messaggio dev'essere inviato
         textFieldMsg.setOnKeyPressed(keyEvent -> {
-            if (keyEvent.getCode().equals(KeyCode.ENTER))
-                send();
+            if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                try {
+                    send();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         });
 
         textFieldMsg.textProperty().addListener(new ChangeListener<String>() {
@@ -243,8 +244,10 @@ public class ViewManager {
 
     //metodo associato al pulsante che permette l'invio del messaggio
     @FXML
-    public void send(){
-        if (!textFieldMsg.getText().isEmpty()) {
+    public void send() throws IOException {
+        String text = textFieldMsg.getText();
+        System.out.println(text);
+        if (!text.isEmpty()) {
 
             controller.sendText(chat.getPortaDestinatario(), chat.getIp(), new Packet(textFieldMsg.getText()));
 
@@ -258,7 +261,30 @@ public class ViewManager {
             //resetto testo
             textFieldMsg.setText("");
 
-        } else{
+        }
+
+        else{
+
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter extFilter =
+                    new FileChooser.ExtensionFilter("Image", "*.png", "*.jpg", "*.jpeg");
+            fileChooser.getExtensionFilters().add(extFilter);
+            File selectedFile = fileChooser.showOpenDialog(null);
+
+            if (selectedFile != null) {
+
+                Packet packet = new Packet(selectedFile);
+                controller.sendText(chat.getPortaDestinatario(), chat.getIp(), packet);
+                chat.addMessaggio(new ImageMessage(selectedFile, "0", true));
+
+                //FIXME: Inserire visualizzazione messaggio
+                drawImage(selectedFile, true);
+
+
+            }
+            else {
+
+            }
 
         }
 
@@ -382,6 +408,34 @@ public class ViewManager {
 
     }
 
+    public void drawImage(File file, boolean sent){
+
+        ImageView imageView = new ImageView();
+        Image image = new Image(file.toURI().toString());
+        imageView.setImage(image);
+        imageView.setFitHeight(200);
+        imageView.setFitWidth(250);
+        Pane pane = new Pane();
+        pane.getChildren().add(imageView);
+        pane.getStyleClass().clear();
+        pane.getStyleClass().add("imageMsg");
+
+        HBox hBox = new HBox();
+        hBox.getChildren().add(pane);
+        if (sent)
+            hBox.setAlignment(Pos.BASELINE_RIGHT);
+        else
+            hBox.setAlignment(Pos.BASELINE_LEFT);
+
+        hBox.setPadding(new Insets(10,5,5,10));
+
+        vBoxDialogo.getChildren().add(hBox);
+
+        // necessario per far scorrere la scroll view automaticamente all'ultimo messaggio,
+        // che altrimenti rimarrebbe ferma in cima
+        scrollPane.setVvalue(1.0);
+
+    }
 
     @FXML
     public void modifyContact() throws IOException {
@@ -443,17 +497,17 @@ public class ViewManager {
     // metodo per ricaricare i messaggi nel momento in cui clicco su un altro contatto
     private void reloadMeassages() {
 
-        ArrayList<TextMessage> messaggi = chat.getMessaggi();
+        ArrayList<Message> messaggi = chat.getMessaggi();
 
         // pulisco dalla vecchia conversazione
         vBoxDialogo.getChildren().clear();
 
         // per ogni messaggio lo inserisco con uno stile differente se ricevuto o inviato
-        for (TextMessage textMessage : messaggi) {
+        for (Message textMessage : messaggi) {
             String style = "labelMsg";
             if (!textMessage.isSent())
                 style = "labelMsgReceived";
-            drawMessage(textMessage.isSent(), style, textMessage.getTesto());
+            drawMessage(textMessage.isSent(), style, ((TextMessage)textMessage).getTesto());
         }
 
     }

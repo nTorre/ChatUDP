@@ -5,15 +5,21 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.view.NewContactController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.view.NewContactController">
    <children>
-      <ListView fx:id="listViewIps" layoutX="34.0" layoutY="53.0" onMouseClicked="#listIpClicked" prefHeight="170.0" prefWidth="152.0" />
-      <Label layoutX="34.0" layoutY="29.0" text="Ip disponibili:" />
-      <TextField fx:id="textFieldIp" layoutX="211.0" layoutY="53.0" promptText="Ip" styleClass="textFieldMsg" stylesheets="@../style.css" />
-      <TextField fx:id="textFieldPort" layoutX="211.0" layoutY="105.0" promptText="Porta" styleClass="textFieldMsg" stylesheets="@../style.css" />
-      <TextField fx:id="textFieldName" layoutX="211.0" layoutY="158.0" promptText="Nome" styleClass="textFieldMsg" stylesheets="@../style.css" />
-      <Button layoutX="50.0" layoutY="237.0" mnemonicParsing="false" onAction="#cancel" prefHeight="40.0" prefWidth="107.0" styleClass="buttonCustom" stylesheets="@../style.css" text="Annulla" />
-      <Button layoutX="243.0" layoutY="237.0" mnemonicParsing="false" onAction="#confirm" prefHeight="40.0" prefWidth="107.0" styleClass="buttonCustom" stylesheets="@../style.css" text="Conferma" />
+      <ListView fx:id="listViewIps" layoutX="93.0" layoutY="115.0" onMouseClicked="#listIpClicked" prefHeight="170.0" prefWidth="152.0" />
+      <Label layoutX="93.0" layoutY="91.0" text="Ip disponibili:" />
+      <TextField fx:id="textFieldIp" layoutX="348.0" layoutY="125.0" promptText="Ip" styleClass="textFieldMsg" stylesheets="@../style.css" />
+      <TextField fx:id="textFieldPort" layoutX="348.0" layoutY="187.0" promptText="Porta" styleClass="textFieldMsg" stylesheets="@../style.css" />
+      <TextField fx:id="textFieldName" layoutX="348.0" layoutY="244.0" promptText="Nome" styleClass="textFieldMsg" stylesheets="@../style.css" />
+      <Button layoutX="94.0" layoutY="323.0" mnemonicParsing="false" onAction="#cancel" prefHeight="40.0" prefWidth="150.0" styleClass="buttonCustom" stylesheets="@../style.css" text="Annulla" />
+      <Button layoutX="357.0" layoutY="323.0" mnemonicParsing="false" onAction="#confirm" prefHeight="40.0" prefWidth="150.0" styleClass="buttonCustom" stylesheets="@../style.css" text="Conferma" />
+      <Label layoutX="205.0" layoutY="32.0" text="Crea un contatto">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

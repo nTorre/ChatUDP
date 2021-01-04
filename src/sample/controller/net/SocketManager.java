@@ -1,7 +1,7 @@
 package sample.controller.net;
 
 import sample.controller.Controller;
-import sample.controller.net.*;
+import sample.model.Packet;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -19,6 +19,11 @@ public class SocketManager {
     private String activeType;
 
     public SocketManager() {
+        try {
+            senderP2P = new SenderP2P();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendText(int port, String destIP, Packet packet){
@@ -120,11 +125,13 @@ public class SocketManager {
 
     private void setServiceType() throws IOException {
         String requiredType = Controller.getActiveChatType();
-        if( !activeType.equals(requiredType) ){
-            if(requiredType.equals("p2p")){
-                switchToP2P();
-            }else{
-                switchToMulticast();
+        if(activeType!=null){
+            if( !activeType.equals(requiredType) ){
+                if(requiredType.equals("p2p")){
+                    switchToP2P();
+                }else{
+                    switchToMulticast();
+                }
             }
         }
         activeType = requiredType;

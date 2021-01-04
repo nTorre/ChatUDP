@@ -1,5 +1,7 @@
 package sample.controller.net;
 
+import sample.model.Packet;
+
 import java.io.IOException;
 
 public interface Sender {

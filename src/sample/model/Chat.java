@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class Chat{
 
-    private ArrayList<TextMessage> messaggi;
+    private ArrayList<Message> messaggi;
     private TextMessage lastReceived;
 
     private ViewManager viewManager;
@@ -33,7 +33,7 @@ public class Chat{
         messaggi = new ArrayList<>();
     }
 
-    public void addMessaggio(TextMessage textMessage){
+    public void addMessaggio(Message textMessage){
         messaggi.add(textMessage);
     }
 
@@ -81,11 +81,11 @@ public class Chat{
                 '}';
     }
 
-    public ArrayList<TextMessage> getMessaggi() {
+    public ArrayList<Message> getMessaggi() {
         return messaggi;
     }
 
-    public void setMessaggi(ArrayList<TextMessage> messaggi) {
+    public void setMessaggi(ArrayList<Message> messaggi) {
         this.messaggi = messaggi;
     }
 

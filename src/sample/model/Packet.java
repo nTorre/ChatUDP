@@ -1,10 +1,11 @@
-package sample.controller.net;
+package sample.model;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.WritableRaster;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -31,13 +32,12 @@ public class Packet {
     }
 
     public Packet(File image) throws IOException {
-        BufferedImage bufferedImage = ImageIO.read(image);
+        BufferedImage img = ImageIO.read(image);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(img, "jpg", baos);
+        baos.flush();
+        byte[] arr2 = baos.toByteArray();
 
-        // get DataBufferBytes from Raster
-        WritableRaster raster = bufferedImage .getRaster();
-        DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
-
-        byte[] arr2 = data.getData();
         bytes = new byte[arr2.length+1];
         bytes[0] = 1;
         for (int i=1; i<arr2.length+1;i++){

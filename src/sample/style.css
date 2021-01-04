@@ -114,6 +114,12 @@
 -fx-background-color: #7FD6E9;
 }
 
+.imageMsg{
+-fx-background-radius: 10 10 10 10;
+-fx-background-color: #7FD6E9;
+-fx-padding: 10 10 10 10;
+}
+
 .labelMsgReceived{
 -fx-background-radius: 10 10 10 10;
 -fx-background-color: #1a8199;

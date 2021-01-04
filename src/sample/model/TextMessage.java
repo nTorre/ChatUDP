@@ -8,16 +8,15 @@
 
 package sample.model;
 
-public class TextMessage {
+public class TextMessage extends Message{
 
     private String testo;
-    private String timestamp;
-    private boolean sent;
+
 
     public TextMessage(String testo, String timestamp, boolean sent) {
+        super(timestamp, sent);
         this.testo = testo;
-        this.timestamp = timestamp;
-        this.sent = sent;
+
     }
 
     public String getTesto() {
@@ -28,19 +27,4 @@ public class TextMessage {
         this.testo = testo;
     }
 
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public boolean isSent() {
-        return sent;
-    }
-
-    public void setSent(boolean sent) {
-        this.sent = sent;
-    }
 }
