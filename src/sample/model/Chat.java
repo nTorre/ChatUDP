@@ -65,7 +65,6 @@ public class Chat{
         this.ip = ip;
         this.nome = nome;
         this.portaDestinatario = porta;
-        viewManager.update(this);
     }
 
     public String getType() {

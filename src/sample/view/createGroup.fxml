@@ -10,11 +10,14 @@
 <Pane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.controller.CreateGroupController">
    <children>
       <Button layoutX="197.0" layoutY="250.0" mnemonicParsing="false" onAction="#createGr" prefHeight="40.0" prefWidth="207.0" styleClass="buttonCustom" stylesheets="@../style.css" text="Conferma" />
-      <TextField fx:id="textFieldIpCr" layoutX="180.0" layoutY="152.0" prefWidth="240.0" styleClass="textFieldMsg" stylesheets="@../style.css" />
-      <Label layoutX="228.0" layoutY="83.0" text="Inserisci ip:">
+      <TextField fx:id="textFieldIpCr" layoutX="181.0" layoutY="110.0" prefWidth="240.0" promptText="Ip" styleClass="textFieldMsg" stylesheets="@../style.css" />
+      <TextField fx:id="groupNameCr" layoutX="181.0" layoutY="173.0" prefWidth="240.0" promptText="Nome gruppo" styleClass="textFieldMsg" stylesheets="@../style.css" />
+      <Label layoutX="183.0" layoutY="31.0" text="Entra in un gruppo">
          <font>
             <Font name="System Bold" size="27.0" />
          </font>
       </Label>
    </children>
 </Pane>
+
+

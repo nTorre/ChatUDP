@@ -16,7 +16,7 @@
       <TextField fx:id="textFieldName" layoutX="348.0" layoutY="244.0" promptText="Nome" styleClass="textFieldMsg" stylesheets="@../style.css" />
       <Button layoutX="94.0" layoutY="323.0" mnemonicParsing="false" onAction="#cancel" prefHeight="40.0" prefWidth="150.0" styleClass="buttonCustom" stylesheets="@../style.css" text="Annulla" />
       <Button layoutX="357.0" layoutY="323.0" mnemonicParsing="false" onAction="#confirm" prefHeight="40.0" prefWidth="150.0" styleClass="buttonCustom" stylesheets="@../style.css" text="Conferma" />
-      <Label layoutX="205.0" layoutY="32.0" text="Crea un contatto">
+      <Label fx:id="labelInfo" layoutX="205.0" layoutY="32.0" text="Crea un contatto">
          <font>
             <Font size="24.0" />
          </font>

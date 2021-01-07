@@ -11,10 +11,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import sample.Main;
 import sample.model.Chat;
 
+import java.io.File;
 import java.io.IOException;
 
 public class ContattoListCellController extends ListCell<Chat> {
@@ -31,9 +34,11 @@ public class ContattoListCellController extends ListCell<Chat> {
     @FXML
     Label labelTime;
 
-
     @FXML
     AnchorPane root;
+
+    @FXML
+    ImageView imageProfile;
 
     private FXMLLoader mLLoader;
 
@@ -73,6 +78,15 @@ public class ContattoListCellController extends ListCell<Chat> {
                 labelLastMess.setText(chat.getLastReceived().getTesto());
                 labelTime.setText(chat.getLastReceived().getTimestamp());
             }
+
+            File file = new File("src/sample/icons/addcontatto.png");
+
+            if(!chat.getType().equals("p2p")){
+                file = new File("src/sample/icons/multicast.png");
+            }
+
+            Image image = new Image(file.toURI().toString());
+            imageProfile.setImage(image);
 
 
             setText(null);

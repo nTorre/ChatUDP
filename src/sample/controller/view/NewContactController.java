@@ -9,6 +9,7 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -38,6 +39,9 @@ public class NewContactController{
     @FXML
     ListView<String> listViewIps;
 
+    @FXML
+    Label labelInfo;
+
     static ArrayList<String> listaIp;
 
     Chat chat;
@@ -53,6 +57,8 @@ public class NewContactController{
 
     static volatile int i=0;
     private static final Boolean isComplete = false;
+
+    private ViewManager viewManager;
 
     static CountDownLatch latch;
 
@@ -124,6 +130,7 @@ public class NewContactController{
             contatti.remove(chat);
 
         chat.setValues(ip, porta, nome);
+        viewManager.update(chat);
 
         stage.close();
     }
@@ -143,6 +150,7 @@ public class NewContactController{
     // nel caso il contatto sia da modificare, setto i valori che possiedo
     public void setInfo(){
         if (!isNew) {
+            labelInfo.setText("Modifica il contatto");
             // porta e ip ce li ho per forza, il nome no: se mi arrivasse un pacchetto da un contatto che on ho
             textFieldPort.setText(String.valueOf(chat.getPortaDestinatario()));
             textFieldIp.setText(chat.getIp());
@@ -154,7 +162,7 @@ public class NewContactController{
 
     public void setObserver(ViewManager viewManager){
         //osservatore=controller;
-        chat.addListener(viewManager);
+        this.viewManager = viewManager;
     }
 
     private void textEditError(boolean isWrong) {

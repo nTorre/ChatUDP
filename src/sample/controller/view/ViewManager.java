@@ -300,7 +300,7 @@ public class ViewManager {
         secondaryStage = new Stage();
         Parent root = loader.load();
         secondaryStage.setTitle("Nuovo Contatto");
-        Scene scene = new Scene(root, 400, 300);
+        Scene scene = new Scene(root, 600, 400);
         //scene.getStylesheets().add(this.getClass().getResource("style.css").toExternalForm());
         secondaryStage.setScene(scene);
         secondaryStage.show();
@@ -334,6 +334,11 @@ public class ViewManager {
 
 
         CreateGroupController createGroupController = loader.getController();
+        createGroupController.setViewManager(this);
+        chat = new Chat("INSERIRE FORMATO CORRETTO X PICCIN");
+        createGroupController.setChat(chat);
+        createGroupController.setStage(secondaryStage);
+
 
 
     }
@@ -354,6 +359,11 @@ public class ViewManager {
 
 
         JoinController joinGroup = loader.getController();
+        joinGroup.setViewManager(this);
+        chat = new Chat("INSERIRE FORMATO CORRETTO X PICCIN");
+        joinGroup.setChat(chat);
+        joinGroup.setStage(secondaryStage);
+
     }
 
 
@@ -445,7 +455,7 @@ public class ViewManager {
         secondaryStage = new Stage();
         Parent root = loader.load();
         secondaryStage.setTitle("Modifica Contatto");
-        Scene scene = new Scene(root, 400, 300);
+        Scene scene = new Scene(root, 600, 400);
         //scene.getStylesheets().add(this.getClass().getResource("style.css").toExternalForm());
         secondaryStage.setScene(scene);
         secondaryStage.show();
@@ -507,7 +517,11 @@ public class ViewManager {
             String style = "labelMsg";
             if (!textMessage.isSent())
                 style = "labelMsgReceived";
-            drawMessage(textMessage.isSent(), style, ((TextMessage)textMessage).getTesto());
+            if (textMessage instanceof TextMessage)
+                drawMessage(textMessage.isSent(), style, ((TextMessage)textMessage).getTesto());
+            else if(textMessage instanceof ImageMessage)
+                drawImage(((ImageMessage) textMessage).getImage(), textMessage.isSent());
+
         }
 
     }
