@@ -335,12 +335,9 @@ public class ViewManager {
 
         CreateGroupController createGroupController = loader.getController();
         createGroupController.setViewManager(this);
-        chat = new Chat("INSERIRE FORMATO CORRETTO X PICCIN");
+        chat = new Chat("multicast");
         createGroupController.setChat(chat);
         createGroupController.setStage(secondaryStage);
-
-
-
     }
 
     @FXML
@@ -379,6 +376,12 @@ public class ViewManager {
             // imposto come contatto corrente quello che ho selezionato e persente nella lista
             chat = controller.getContatto(listViewChat.getSelectionModel().getSelectedIndex());
             System.out.println(chat.getIp());
+            //imposto tipo di sender/receiver in base alla chat
+            try {
+                controller.getSocketManager().setServiceType();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             // carico i messaggi
             reloadMeassages();
 

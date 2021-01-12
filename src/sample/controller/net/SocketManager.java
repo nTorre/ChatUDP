@@ -21,18 +21,13 @@ public class SocketManager {
     public SocketManager() {
         try {
             senderP2P = new SenderP2P();
+            receiverP2P = new ReceiverP2P(port);
         } catch (SocketException e) {
             e.printStackTrace();
         }
     }
 
     public void sendText(int port, String destIP, Packet packet){
-        try {
-            setServiceType();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         if(activeType.equals("p2p")){
             try {
                 senderP2P.send(port, destIP, packet);
@@ -110,6 +105,8 @@ public class SocketManager {
 
         receiverP2P = new ReceiverP2P(port);
         senderP2P = new SenderP2P();
+
+        System.err.println("NOW P2P");
     }
 
     private void switchToMulticast() throws IOException {
@@ -121,9 +118,11 @@ public class SocketManager {
 
         receiverMulticast = new ReceiverMulticast(port);
         senderMulticast = new SenderMulticast();
+
+        System.err.println("NOW MULTICAST");
     }
 
-    private void setServiceType() throws IOException {
+    public void setServiceType() throws IOException {
         String requiredType = Controller.getActiveChatType();
         if(activeType!=null){
             if( !activeType.equals(requiredType) ){

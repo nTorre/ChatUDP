@@ -67,7 +67,8 @@ public class Controller {
                     // stesso ip = contatto già presente nella lista
                     if (contatto.getIp().equals(address)) {
                         isNew = false;
-                        addChat();
+                        //addChat();
+                        contatto.addMessaggio(new TextMessage(received, Long.toString(System.currentTimeMillis()), false));
                         // esco, in quanto è già stato trovato il contatto
                         break;
                     }
@@ -79,6 +80,7 @@ public class Controller {
                     // aggiungo il controller come osservatore per notificare la lista
                     // di modo tale da aggungerlo
                     // aggiungo alla lista dei messaggi del contatto il messaggio nuovo
+                    addContatto(chat);
                     chat.addMessaggio(new TextMessage(received, "0", false));
                     System.out.println(received);
                     // imposto porta e ip, ma non il nome, aggiungibile in seguito modificando il contatto
@@ -89,11 +91,6 @@ public class Controller {
             }
         });
         thread.start();
-
-
-
-
-
     }
 
 
@@ -102,18 +99,17 @@ public class Controller {
         socketManager.sendText(port, destIP, packet);
     }
 
-    private void addChat(){
-        Chat tmp = new Chat("p2p");
-        contatti.add(new Chat("p2p"));
-        //colllegare con i parametri che arrivano da interfaccia
-    }
-
     public void changePort(int newPort){
         socketManager.changePort(newPort);
     }
 
     public static String getActiveChatType(){
-        return viewManager.getActiveChat().getType();
+        Chat chat = viewManager.getActiveChat();
+        if(chat==null){
+            return "p2p";
+        }else{
+            return chat.getType();
+        }
     }
 
 
@@ -139,6 +135,10 @@ public class Controller {
 
     public void endSocketManager(){
         socketManager.close();
+    }
+
+    public SocketManager getSocketManager(){
+        return socketManager;
     }
 
 
