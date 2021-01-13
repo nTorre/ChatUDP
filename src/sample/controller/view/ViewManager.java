@@ -431,7 +431,12 @@ public class ViewManager {
         Pane pane = new Pane();
         pane.getChildren().add(imageView);
         pane.getStyleClass().clear();
-        pane.getStyleClass().add("imageMsg");
+        if (sent) {
+            pane.getStyleClass().add("imageMsg");
+        }else{
+            pane.getStyleClass().add("imageMsgReceived");
+
+        }
 
         HBox hBox = new HBox();
         hBox.getChildren().add(pane);

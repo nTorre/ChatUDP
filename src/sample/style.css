@@ -125,6 +125,12 @@
 -fx-background-color: #1a8199;
 }
 
+.labelMsgReceived{
+-fx-background-radius: 10 10 10 10;
+-fx-background-color: #1a8199;
+-fx-padding: 10 10 10 10;
+}
+
 .buttonModify{
 -fx-background-radius: 30 30 30 30;
 -fx-background-color: #7FD6E9

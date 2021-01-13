@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 public class Packet {
 
     private byte[] bytes;
-    enum Type{
+    public enum Type{
         STRING,
         IMAGE
     }

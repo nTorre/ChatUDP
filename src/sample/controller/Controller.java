@@ -5,12 +5,13 @@
  */
 
 package sample.controller;
-import sample.model.Packet;
+import javafx.application.Platform;
+import sample.model.*;
 import sample.controller.net.SocketManager;
 import sample.controller.view.ViewManager;
-import sample.model.Chat;
-import sample.model.TextMessage;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.util.ArrayList;
 
@@ -50,7 +51,6 @@ public class Controller {
                 System.out.println(socketManager.getPort());
 
                 // converte il buf in stringa
-                String received = new String(packet.getData(), 0, packet.getLength());
 
                 // FIXME: 22/12/2020  spostere il codice del cambio nel SocketManager? che errore risolve?
                 // questo if è necessario per evitare errori durante il cambio della porta di ascolto
@@ -63,12 +63,49 @@ public class Controller {
 
                 // scannerizzo i contatti e verifico se il messaggio è stato inviato da un
                 // contatto nuovo o meno
+
+                byte[] received = packet.getData();
+                Packet packet1 = new Packet(received);
                 for (Chat contatto : contatti) {
                     // stesso ip = contatto già presente nella lista
                     if (contatto.getIp().equals(address)) {
                         isNew = false;
                         //addChat();
-                        contatto.addMessaggio(new TextMessage(received, Long.toString(System.currentTimeMillis()), false));
+                        if(packet1.getType().equals(Packet.Type.IMAGE)) {
+                            try {
+                                File file = (File) packet1.getFormattedContent();
+                                contatto.addMessaggio(new ImageMessage(file, Long.toString(System.currentTimeMillis()), false));
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        viewManager.drawImage(file, false);
+
+                                    }
+                                });
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        else{
+                            try {
+                                String text = (String) packet1.getFormattedContent();
+                                contatto.addMessaggio(new TextMessage(text, Long.toString(System.currentTimeMillis()), false));
+
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        viewManager.drawMessage(false,"labelMsgReceived", text);
+
+
+                                    }
+                                });
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
                         // esco, in quanto è già stato trovato il contatto
                         break;
                     }
@@ -80,11 +117,27 @@ public class Controller {
                     // aggiungo il controller come osservatore per notificare la lista
                     // di modo tale da aggungerlo
                     // aggiungo alla lista dei messaggi del contatto il messaggio nuovo
+                    if(packet1.getType().equals(Packet.Type.IMAGE)) {
+                        try {
+                            chat.addMessaggio(new ImageMessage((File) packet1.getFormattedContent(), Long.toString(System.currentTimeMillis()), false));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else{
+                        try {
+                            chat.addMessaggio(new TextMessage((String) packet1.getFormattedContent(), Long.toString(System.currentTimeMillis()), false));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
                     addContatto(chat);
-                    chat.addMessaggio(new TextMessage(received, "0", false));
                     System.out.println(received);
                     // imposto porta e ip, ma non il nome, aggiungibile in seguito modificando il contatto
                     chat.setValues(address, porta, "");
+
+
                 }
 
 
